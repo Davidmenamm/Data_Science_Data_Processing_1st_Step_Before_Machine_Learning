@@ -1,0 +1,1 @@
+Process a set of data and do all the data preparing process, extract characteristics, in order for it to be ready to run Machine Learning models.
