@@ -11,19 +11,43 @@
 from Coordinator import Coordinator as Cd
 
 # paths of the datasets
-trainPath = r'src\data\SPECTF.train'
-testPath = r'src\data\SPECTF.test'
+# input
+trainPath = r'src\data\input\SPECTF.train'
+testPath = r'src\data\input\SPECTF.test'
+# output
+joinedPath = r'src\data\output\1_joinedDataSet.txt'
+normPath = r'src\data\output\2_normDataSet.txt'
+rankPath = r'src\data\output\3_ranking.txt'
+corrTabPath = r'src\data\output\4_correlationTable.txt'
+finalPath = r'src\data\output\5_reducedRanking.csv'
+
+
+# function to write trazability of program to txt file
+def writeToTxt(data, path):
+    data = str(data)
+    with open(path, 'w') as f:  # open the file to write
+        f.write(data)
+
 
 # coordinator instance to carry out all data processing, process
 coord = Cd()
 
 # join both datasets, inputs are dataset paths
 joined = coord.join(trainPath, testPath)
+writeToTxt(joined, joinedPath)
 
 # normalize joined dataSet
 norm = coord.normalize(joined)
+writeToTxt(norm, normPath)
 
-# apply filter and extract ranking to data set
-ranking = coord.applyFilt(norm, 10)
+# apply filter and extract ranking to data set (chi-squared)
+rank = coord.runFilt(norm, 22)
+writeToTxt(rank, rankPath)
+# correlation table
+# ...
 
-print('Ranking Top 10:\n', ranking)
+# apply classifier (pearson correlation)
+finalDataSet = coord.runClassifier(rank, norm)
+# print final result to output file
+finalDataSet.to_csv(
+    finalPath, index=False)

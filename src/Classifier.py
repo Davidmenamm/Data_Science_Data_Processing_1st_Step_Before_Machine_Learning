@@ -12,9 +12,24 @@ class Classifier:
     def __init__(self):
         pass
 
+    # rescale proportions of list using min-max method
+    def rescale(self, ls):
+        if len(ls) > 0:
+            minValue = min(ls)
+            maxValue = max(ls)
+            for idx in range(0, len(ls)):
+                ls[idx] = (ls[idx]-minValue)/(maxValue-minValue)
+        # return
+        return ls
+
     # Run classifier, uses pearson correlation
     # Returns low correlation dataSet, receives filtered dataSet
-    def runClassifier(self, filtDataSet):
+    def runClassifier(self, filtDataSet, normDataSet):
+        # transpose data set for correct addressing, on correct dataSet
+        filtDataSet.set_index('Attribute', inplace=True)
+        filtDataSet = filtDataSet.transpose()
+        colNames = list(filtDataSet)
+        filtDataSet = normDataSet[colNames]
         # To store final low correlation columns
         lowCorrColumns = []
         # Min percent accepted for it to be a correlation
@@ -33,14 +48,16 @@ class Classifier:
             currentCol = filtDataSet.iloc[:, idx]
             # calculate correlation respective to first quantitative column
             correlation = pearsonr(firstQntCol, currentCol)  # tuple value
-            # append columns to ls
+            # append columns to ls, as a dataframe
+
+            currentCol = pd.DataFrame({colNames[idx]: currentCol.values})
             lsColumns.append(currentCol)
             # append correlation to ls
             lsCorr.append(correlation[0])
 
         # Conserve only columns with low correlation between them
         # From a high correlation group, store only one col
-        while len(lsColumns) > 0:
+        while len(lsColumns) > 0 and len(lsCorr) > 1:
             # store correlated idxs, each loop
             corrIdxs = []
             for idx in range(0, len(lsCorr)):
@@ -54,5 +71,13 @@ class Classifier:
                 lsColumns) if j not in corrIdxs]
             lsCorr = [i for j, i in enumerate(
                 lsCorr) if j not in corrIdxs]
+            # Rescale proportions of remaining elmnts in correlations list
+            lsCorr = self.rescale(lsCorr)
+
+        # transform arrOfSeries (columns), into one dataframe
+        finalDataFrame = lowCorrColumns[0]
+        for idx in range(1, len(lowCorrColumns)):
+            finalDataFrame = pd.concat(
+                [finalDataFrame, lowCorrColumns[idx]], axis=1)
         # return
-        # return ranking
+        return finalDataFrame

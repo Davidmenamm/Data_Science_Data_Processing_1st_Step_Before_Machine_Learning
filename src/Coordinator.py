@@ -4,6 +4,7 @@
 # Imports
 import pandas as pd
 from Filter import Filter as Ft
+from Classifier import Classifier as Cf
 
 # Coordinator Class
 
@@ -43,10 +44,15 @@ class Coordinator:
         return dataSet
 
     # apply filter, get ranking for data set. Chi2 used.
-    def applyFilt(self, normDataSet, num):
+    def runFilt(self, normDataSet, num):
         filt = Ft()
         filt = filt.runFilter(normDataSet, num)
         return filt
 
-    # apply pearson correlation to input dataSet
-    def clasifier
+    # run classifier, uses pearson correlation
+    # receives filtered dataSet
+    # returns dataSet with low correlation atributes (columns)
+    def runClassifier(self, filtDataSet, normDataSet):
+        cf = Cf()
+        lowCorrDataSet = cf.runClassifier(filtDataSet, normDataSet)
+        return lowCorrDataSet
