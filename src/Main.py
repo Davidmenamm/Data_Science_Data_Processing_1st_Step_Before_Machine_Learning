@@ -20,9 +20,10 @@ coord = Cd()
 # join both datasets, inputs are dataset paths
 joined = coord.join(trainPath, testPath)
 
-# print('joined\n', joined)
-
 # normalize joined dataSet
 norm = coord.normalize(joined)
 
-print('norm\n', norm)
+# apply filter and extract ranking to data set
+ranking = coord.applyFilt(norm, 10)
+
+print('Ranking Top 10:\n', ranking)

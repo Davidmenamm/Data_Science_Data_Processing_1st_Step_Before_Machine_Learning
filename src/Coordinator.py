@@ -3,6 +3,7 @@
 
 # Imports
 import pandas as pd
+from Filter import Filter as Ft
 
 # Coordinator Class
 
@@ -40,3 +41,12 @@ class Coordinator:
         dataSet = dataSet.transpose()
         # return
         return dataSet
+
+    # apply filter, get ranking for data set. Chi2 used.
+    def applyFilt(self, normDataSet, num):
+        filt = Ft()
+        filt = filt.runFilter(normDataSet, num)
+        return filt
+
+    # apply pearson correlation to input dataSet
+    def clasifier
