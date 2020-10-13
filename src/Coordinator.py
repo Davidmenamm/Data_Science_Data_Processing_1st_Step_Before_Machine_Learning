@@ -11,8 +11,11 @@ from Classifier import Classifier as Cf
 
 class Coordinator:
     # Constructor
-    def __init__(self):
-        pass
+    def __init__(self, decimals):
+        if(decimals <= 12):
+            self.decimals = decimals
+        else:
+            self.decimals = 12
 
     # to join datasets
     def join(self, pathA, pathB):
@@ -36,7 +39,8 @@ class Coordinator:
             min = dim.min()
             max = dim.max()
             for idxCol, value in dim.items():  # for idx or numerosity
-                dataSet.iat[int(idxRow), int(idxCol)] = (value-min)/(max-min)
+                dataSet.iat[int(idxRow), int(idxCol)] = round(
+                    (value-min)/(max-min), 6)
             idxRow += 1
         # to original position
         dataSet = dataSet.transpose()
@@ -53,6 +57,6 @@ class Coordinator:
     # receives filtered dataSet
     # returns dataSet with low correlation atributes (columns)
     def runClassifier(self, filtDataSet, normDataSet):
-        cf = Cf()
+        cf = Cf(self.decimals)
         lowCorrDataSet = cf.runClassifier(filtDataSet, normDataSet)
         return lowCorrDataSet
