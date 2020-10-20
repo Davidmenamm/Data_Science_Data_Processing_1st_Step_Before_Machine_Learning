@@ -84,10 +84,6 @@ class Classifier:
             # calculate correlation respective to first quantitative column
             correlation = pearsonr(firstQntCol, currentCol)  # tuple value
 
-            # test print
-            if idx == 0:
-                print('correlation', correlation)
-
             # append columns to ls, as a dataframe
             currentCol = pd.DataFrame({colNames[idx]: currentCol.values})
             lsColumns.append(currentCol)

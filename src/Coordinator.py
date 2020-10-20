@@ -34,14 +34,29 @@ class Coordinator:
 
         # transpose dataSet (pd frame) and apply technique
         dataSet = dataSet.transpose()
+
+        # Calculate min and max of matrix
+        min = 100  # temporal bigger number at first for min
+        max = 0
+        for _, dim in dataSet.iterrows():  # for dimension or attributes
+            tempMin = dim.min()
+            tempMax = dim.max()
+            if tempMin < min and tempMin != 0:
+                min = tempMin
+            if tempMax > max:
+                max = tempMax
+
+        # apply min max for each value
         idxRow = 0
         for _, dim in dataSet.iterrows():  # for dimension or attributes
-            min = dim.min()
-            max = dim.max()
+            # avoid normalizing first binary column
             for idxCol, value in dim.items():  # for idx or numerosity
-                dataSet.iat[int(idxRow), int(idxCol)] = round(
-                    (value-min)/(max-min), 6)
+                if idxRow != 0:
+                    dataSet.iat[int(idxRow), int(idxCol)] = round(
+                        (value-min)/(max-min), 6)
+            # increment row count
             idxRow += 1
+
         # to original position
         dataSet = dataSet.transpose()
         # return

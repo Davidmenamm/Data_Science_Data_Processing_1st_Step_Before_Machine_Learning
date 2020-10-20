@@ -42,7 +42,7 @@ norm = coord.normalize(joined)
 writeToTxt(norm, normPath)
 
 # apply filter and extract ranking to data set (chi-squared)
-rank = coord.runFilt(norm, 20)
+rank = coord.runFilt(norm, 10)
 writeToTxt(rank, rankPath)
 
 # apply classifier (pearson correlation)
